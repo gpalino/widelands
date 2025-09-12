@@ -6,7 +6,7 @@ on:
   pull_request:
     types: [ opened, reopened, synchronize ]
   push:
-    branches: [ master, protected/* ]
+    branches: [ master, wb-test1, protected/* ]
 
 jobs:
   changes:
@@ -24,7 +24,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/wb-test1'
       with:
         fetch-depth: 1
     - name: Check for changed files
@@ -126,14 +126,14 @@ jobs:
 
   appimage:
     if: >
-      github.repository == 'widelands/widelands' && github.ref == 'refs/heads/master' &&
+      github.repository == 'widelands/widelands' && github.ref == 'refs/heads/wb-test1' &&
       needs.changes.outputs.appimage == 'true'
     needs: [changes, pre-build_checks]
     uses: ./.github/workflows/build_appimage.yaml
 
   dev_release:
     name: Automated development pre-release
-    if: ${{ github.repository == 'widelands/widelands' && github.ref == 'refs/heads/master' && always() }}
+    if: ${{ github.repository == 'widelands/widelands' && github.ref == 'refs/heads/wb-test1' && always() }}
     needs: [windows, windows-msvc, macos, appimage]
     runs-on: "ubuntu-latest"
     steps:
@@ -182,13 +182,13 @@ jobs:
           done
           # curl exits 23 because grep will kill it after the first match
           set +e
-          latest=$(curl -i "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/master" | grep -m 1 "\"sha\": ")
+          latest=$(curl -i "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/wb-test1" | grep -m 1 "\"sha\": ")
           set -e
           latest=${latest#*: \"}
           latest=${latest%\",}
           if [ "$latest" != "$GITHUB_SHA" ]
           then
-            echo "The master branch ($GITHUB_REF) was updated from '$GITHUB_SHA' to '$latest', cancel"
+            echo "The wb-test1 branch ($GITHUB_REF) was updated from '$GITHUB_SHA' to '$latest', cancel"
             exit 1
           fi
       - name: Updating latest pre-release
@@ -202,7 +202,7 @@ jobs:
           git tag --force latest HEAD
           git push --tags origin
 
-          echo "These builds are automatically generated from master. " >> release_notes
+          echo "These builds are automatically generated from wb-test1. " >> release_notes
           echo "## Latest changes" >> release_notes
           # Print changelog from last 10 commits, strip Co-authored/Co-committed tags
           git log --pretty="- %h: %s (%ai) (%an)" --no-decorate HEAD~10..HEAD | sed 's/Co-.*> //' >> release_notes
