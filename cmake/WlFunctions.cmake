@@ -204,6 +204,15 @@ macro(_common_compile_tasks)
     endif()
   endif()
 
+  include(FetchContent)
+  FetchContent_Declare(
+    cpptrace
+    GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
+    GIT_TAG        v1.0.4 # <HASH or TAG>
+  )
+  FetchContent_MakeAvailable(cpptrace)
+  target_link_libraries(${NAME} cpptrace::cpptrace)
+
   foreach(DEPENDENCY ${ARG_DEPENDS})
     target_link_libraries(${NAME} ${TARGET_LINK_FLAGS} ${DEPENDENCY})
   endforeach(DEPENDENCY)
