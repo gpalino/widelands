@@ -7,6 +7,7 @@ macro(_parse_common_args ARGS)
     C_LIBRARY # Pure C library. No CXX flags.
     WIN32 # Windows binary/library.
     USES_ATOMIC
+    USES_CPPTRACE
     USES_ICU
     USES_MINIZIP
     USES_OPENGL
@@ -202,6 +203,10 @@ macro(_common_compile_tasks)
     else()
       target_link_libraries(${NAME} ICU::uc ICU::dt)
     endif()
+  endif()
+
+  if(ARG_USES_CPPTRACE)
+    target_link_libraries(${NAME} cpptrace::cpptrace)
   endif()
 
   foreach(DEPENDENCY ${ARG_DEPENDS})

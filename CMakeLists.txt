@@ -156,6 +156,15 @@ if(NOT asio_location OR asio_location STREQUAL "")
 endif()
 add_definitions(-DASIO_STANDALONE)
 
+set(CPPTRACE_ENABLE_DEBUG_DECOMPRESSION FALSE)
+include(FetchContent)
+FetchContent_Declare(
+  cpptrace
+  GIT_REPOSITORY https://github.com/gpalino/cpptrace.git
+  GIT_TAG        zstd_test # <HASH or TAG>
+)
+FetchContent_MakeAvailable(cpptrace)
+
 if (APPLE OR WIN32 OR
     CMAKE_SYSTEM_NAME MATCHES "FreeBSD" OR
     CMAKE_SYSTEM_NAME MATCHES "NetBSD" OR
