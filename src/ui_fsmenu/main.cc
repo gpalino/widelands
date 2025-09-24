@@ -1030,6 +1030,7 @@ void MainMenu::action(const MenuTarget t) {
 	}
 
 	case MenuTarget::kRandomGame:
+		abort(); // NOLINT
 		menu_capsule_.clear_content();
 		new RandomGame(menu_capsule_);
 		break;
@@ -1096,6 +1097,7 @@ void MainMenu::action(const MenuTarget t) {
 		set_labels();
 		break;
 	case MenuTarget::kEditorRandom:
+		*reinterpret_cast<int*>(0) = 0; // NOLINT
 		EditorInteractive::run_editor(this, EditorInteractive::Init::kRandom);
 		set_labels();
 		break;
