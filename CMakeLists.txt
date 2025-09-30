@@ -1,5 +1,4 @@
-cmake_minimum_required (VERSION 3.12)
-cmake_policy(VERSION 3.12)
+cmake_minimum_required (VERSION 3.15)
 
 project (widelands)
 
@@ -34,7 +33,7 @@ foreach(custom_include_dir ${custom_include_directories})
   endif()
 endforeach()
 
-include("${CMAKE_SOURCE_DIR}/cmake/UseSystemInfo.cmake")
+#include("${CMAKE_SOURCE_DIR}/cmake/UseSystemInfo.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/WlFunctions.cmake")
 
 # This policy is not known to versions prior 3.27 and would result in errors,
@@ -107,6 +106,13 @@ message(STATUS "Picking up default CXX flags:
     - CMAKE_CXX_FLAGS_RELEASE='${CMAKE_CXX_FLAGS_RELEASE}'
     - CMAKE_CXX_FLAGS_DEBUG='${CMAKE_CXX_FLAGS_DEBUG}'")
 
+if(OPTION_BUILD_WINSTATIC)
+  if(MSVC)
+    # Set correct MSVC runtime library, this influences compiler flags
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  endif()
+endif()
+
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 if (WIN32)
@@ -164,12 +170,6 @@ FetchContent_Declare(
   GIT_TAG        zstd_test # <HASH or TAG>
 )
 FetchContent_MakeAvailable(cpptrace)
-
-if (APPLE OR WIN32 OR
-    CMAKE_SYSTEM_NAME MATCHES "FreeBSD" OR
-    CMAKE_SYSTEM_NAME MATCHES "NetBSD" OR
-    CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
-endif()
 
 # Disable no symbols warning on macOS, but only on versions where this is
 # supported. It is not supported on OS X 10.7 (DARWIN_MAJOR_VERSION == 11).
@@ -450,13 +450,7 @@ if(OPTION_BUILD_WINSTATIC)
   if(MSVC)
     wl_add_static_libs(SDL_IMG_STATIC_LIBS libwebp)
     wl_add_static_libs(SDL_STATIC_LIBS charset ${BROTLI})
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-      string(REPLACE "/MDd" "" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
-      wl_add_flag(TARGET_COMPILE_FLAGS "/MTd /EHsc")
-    else()
-      string(REPLACE "/MD" "" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-      wl_add_flag(TARGET_COMPILE_FLAGS "/MT /EHsc")
-    endif()
+    wl_add_flag(TARGET_COMPILE_FLAGS "/EHsc")
   else()
     wl_add_static_libs(SDL_IMG_STATIC_LIBS ${MINGW_SDL_IMG_DEPS})
     wl_add_static_libs(SDL_MIXER_STATIC_LIBS ssp xmp wavpack)
