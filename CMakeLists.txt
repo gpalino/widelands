@@ -162,6 +162,8 @@ if(NOT asio_location OR asio_location STREQUAL "")
 endif()
 add_definitions(-DASIO_STANDALONE)
 
+#find_package(cpptrace CONFIG REQUIRED)
+#find_package(cpptrace)
 set(CPPTRACE_ENABLE_DEBUG_DECOMPRESSION FALSE)
 include(FetchContent)
 FetchContent_Declare(
