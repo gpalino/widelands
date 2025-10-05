@@ -7,6 +7,7 @@ macro(_parse_common_args ARGS)
     C_LIBRARY # Pure C library. No CXX flags.
     WIN32 # Windows binary/library.
     USES_ATOMIC
+    USES_CPPTRACE
     USES_ICU
     USES_MINIZIP
     USES_OPENGL
