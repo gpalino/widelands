@@ -205,6 +205,11 @@ macro(_common_compile_tasks)
     endif()
   endif()
 
+  if(ARG_USES_CPPTRACE)
+    message(STATUS "Link ${NAME} with cpptrace, flags: ${TARGET_LINK_FLAGS}")
+    target_link_libraries(${NAME} ${TARGET_LINK_FLAGS} cpptrace::cpptrace)
+  endif()
+
   foreach(DEPENDENCY ${ARG_DEPENDS})
     target_link_libraries(${NAME} ${TARGET_LINK_FLAGS} ${DEPENDENCY})
   endforeach(DEPENDENCY)

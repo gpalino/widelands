@@ -156,6 +156,8 @@ if(NOT asio_location OR asio_location STREQUAL "")
 endif()
 add_definitions(-DASIO_STANDALONE)
 
+find_package(cpptrace)
+
 if (APPLE OR WIN32 OR
     CMAKE_SYSTEM_NAME MATCHES "FreeBSD" OR
     CMAKE_SYSTEM_NAME MATCHES "NetBSD" OR
