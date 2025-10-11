@@ -35,6 +35,7 @@ shallow_clone: false
 branches:
   only:
     - master
+    - wb-test3
 
 skip_tags: true
 
