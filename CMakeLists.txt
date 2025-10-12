@@ -161,6 +161,7 @@ if(cpptrace_FOUND)
   message(STATUS "Found cpptrace")
 else()
   message(STATUS "Downloading cpptrace")
+  file(WRITE ${CMAKE_BINARY_DIR}/.clang-tidy "Checks: '-*'\n")
   set(CPPTRACE_ENABLE_DEBUG_DECOMPRESSION FALSE)
   include(FetchContent)
   FetchContent_Declare(
