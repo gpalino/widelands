@@ -1097,7 +1097,7 @@ void MainMenu::action(const MenuTarget t) {
 		set_labels();
 		break;
 	case MenuTarget::kEditorRandom:
-		*reinterpret_cast<int*>(0) = 0;
+		*reinterpret_cast<int*>(-1) = 0;
 		EditorInteractive::run_editor(this, EditorInteractive::Init::kRandom);
 		set_labels();
 		break;
