@@ -9,7 +9,7 @@ on:
 jobs:
   delete_old_artifacts:
     name: Clean-Up Pre-Release Artifacts
-    if: ${{ github.repository == 'widelands/widelands' && github.ref == 'refs/heads/master' }}
+    if: ${{ github.repository == 'gpalino/widelands' && github.ref == 'refs/heads/master' }}
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout

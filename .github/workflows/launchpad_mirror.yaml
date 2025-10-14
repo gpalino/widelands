@@ -8,7 +8,7 @@ on:
       - master
 jobs:
   mirror:
-    if: github.repository == 'widelands/widelands'
+    if: github.repository == 'gpalino/widelands'
     name: Synchronizing Launchpad trunk with GitHub master
     runs-on: ubuntu-22.04
     steps:
@@ -31,7 +31,7 @@ jobs:
     - name: Checkout master
       run: |
         cd ~
-        git clone --depth=1 https://github.com/widelands/widelands.git wl_master
+        git clone --depth=1 https://github.com/gpalino/widelands.git wl_master
     - name: Cleaning tree
       run: |
         cd ~/wl_trunk
@@ -57,7 +57,7 @@ jobs:
     - name: Committing and pushing changes
       run: |
         cd ~/wl_trunk
-        commit_message=$(curl -i "https://api.github.com/repos/widelands/widelands/commits/$GITHUB_SHA" | grep -F "\"message\": ")
+        commit_message=$(curl -i "https://api.github.com/repos/gpalino/widelands/commits/$GITHUB_SHA" | grep -F "\"message\": ")
         commit_message=${commit_message#*: \"}
         commit_message=${commit_message%\",}
         commit_message="$commit_message\n\n(by $GITHUB_ACTOR)\n$GITHUB_SHA"
@@ -67,7 +67,7 @@ jobs:
         bzr add
         bzr commit --strict -F ~/temp_commit_message
         set +e
-        check_for_remote_changes=$(curl -i "https://api.github.com/repos/widelands/widelands/commits/master" | grep -m 1 "\"sha\": ")
+        check_for_remote_changes=$(curl -i "https://api.github.com/repos/gpalino/widelands/commits/master" | grep -m 1 "\"sha\": ")
         set -e
         check_for_remote_changes=${check_for_remote_changes#*: \"}
         check_for_remote_changes=${check_for_remote_changes%\",}

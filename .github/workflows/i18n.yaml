@@ -9,7 +9,7 @@ on:
     - cron: '0 2 * * 1,4,6'
 jobs:
   update:
-    if: github.repository == 'widelands/widelands'
+    if: github.repository == 'gpalino/widelands'
     name: Fetch translations and update catalogs
     runs-on: ubuntu-latest
     steps:
@@ -37,4 +37,4 @@ jobs:
         echo "${{ secrets.TXAUTH }}" > ~/.transifexrc
         git config --global user.name "The Widelands Translations Bot"
         git config --global user.email "bunnybot@widelands.org"
-        ./utils/merge_and_push_translations.sh "https://bunnybot:${{ secrets.WIDELANDS_FORMAT_TOKEN }}@github.com/widelands/widelands.git"
+        ./utils/merge_and_push_translations.sh "https://bunnybot:${{ secrets.WIDELANDS_FORMAT_TOKEN }}@github.com/gpalino/widelands.git"
