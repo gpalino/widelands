@@ -26,10 +26,7 @@
 #include <sstream>
 #include <thread>
 
-#ifdef PRINT_SEGFAULT_BACKTRACE
-#include <execinfo.h>
-#include <unistd.h>
-#endif
+#include <cpptrace/cpptrace.hpp>
 
 #include "base/multithreading.h"
 #include "base/time_string.h"
@@ -47,12 +44,9 @@
 	          << "FATAL ERROR: Received signal " << signal_description << std::endl
 	          << "Backtrace:" << std::endl;
 
-#ifdef PRINT_SEGFAULT_BACKTRACE
-	constexpr int kMaxBacktraceSize = 256;
-	void* array[kMaxBacktraceSize];
-	size_t size = backtrace(array, kMaxBacktraceSize);
-	backtrace_symbols_fd(array, size, STDOUT_FILENO);
-#endif
+	std::ostringstream stacktrace;
+	cpptrace::generate_trace().print(stacktrace, false);
+	std::cout << stacktrace.str();
 
 	std::cout
 	   << std::endl
@@ -99,11 +93,7 @@
 		   file, "Crash report for Widelands %s %s at %s, signal %s\n\n**** BEGIN BACKTRACE ****\n",
 		   build_ver_details().c_str(), thread_name.c_str(), timestr.c_str(),
 		   signal_description.c_str());
-#ifdef PRINT_SEGFAULT_BACKTRACE
-		fflush(file);
-		backtrace_symbols_fd(array, size, fileno(file));
-		fflush(file);
-#endif
+		fputs(stacktrace.str().c_str(), file);
 		fputs("**** END BACKTRACE ****\n", file);
 
 		fclose(file);

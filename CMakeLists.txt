@@ -130,6 +130,9 @@ if (OPTION_BUILD_WINSTATIC)
   endif()
 endif()
 
+# Set to ON when at least one FetchContent_Declare is used
+set(USE_FETCHCONTENT OFF)
+
 find_package (Python3 REQUIRED)
 
 find_package(OpenGL REQUIRED)
@@ -158,6 +161,25 @@ if(NOT asio_location OR asio_location STREQUAL "")
   endif()
 endif()
 add_definitions(-DASIO_STANDALONE)
+
+find_package(cpptrace CONFIG)
+if(cpptrace_FOUND)
+  message(STATUS "Adding crash self-diagnosis handler using installed cpptrace.")
+else()
+  include(FetchContent)
+  FetchContent_Declare(
+    cpptrace
+    GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
+    GIT_TAG        3db8da80111171c219ab5839905771386bee06b3 # v1.0.4
+  )
+  FetchContent_MakeAvailable(cpptrace)
+  set(USE_FETCHCONTENT ON)
+  message(STATUS "Adding crash self-diagnosis handler using downloaded cpptrace.")
+endif()
+
+if(USE_FETCHCONTENT)
+  file(WRITE ${CMAKE_BINARY_DIR}/.clang-tidy "Checks: '-*'\n")
+endif()
 
 # Disable no symbols warning on macOS, but only on versions where this is
 # supported. It is not supported on OS X 10.7 (DARWIN_MAJOR_VERSION == 11).
@@ -458,7 +480,7 @@ if(NOT OPTION_ASAN)
   # Allow self-diagnosis for crashes if the system supports it (uses a GNU extension)
   find_path(has_execinfo "execinfo.h")
   if(has_execinfo)
-    message(STATUS "Adding crash self-diagnosis handler.")
+    message(STATUS "Adding crash self-diagnosis handler using execinfo.")
     add_definitions(-DPRINT_SEGFAULT_BACKTRACE)
     if(NOT WIN32)
       # Needed for human-readable-ish symbolizing; doesn't hurt performance, see https://stackoverflow.com/q/12634114
