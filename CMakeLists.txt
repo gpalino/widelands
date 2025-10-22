@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.15...3.27)
+cmake_minimum_required (VERSION 3.15...3.31)
 
 project (widelands)
 
@@ -44,7 +44,7 @@ if(POLICY CMP0148)
   cmake_policy(SET CMP0148 NEW)
 endif(POLICY CMP0148)
 if(POLICY CMP0153)
-  cmake_policy(SET CMP0153 NEW)
+  cmake_policy(SET CMP0153 OLD)
 endif(POLICY CMP0153)
 if(POLICY CMP0177)  # Added in CMake 3.31
   cmake_policy(SET CMP0177 NEW)
