@@ -198,9 +198,9 @@ jobs:
           GH_TOKEN: "${{ secrets.WIDELANDS_FORMAT_TOKEN }}"
         run: |
           gh release delete latest --yes    || echo "No old release to delete"
-          #git push --delete origin latest   || echo "No latest tag to delete"
-          #git tag --force latest HEAD
-          #git push --tags origin
+          git push --delete origin latest   || echo "No latest tag to delete"
+          git tag --force latest HEAD
+          git push --tags origin
 
           echo "These builds are automatically generated from master. " >> release_notes
           echo "## Latest changes" >> release_notes

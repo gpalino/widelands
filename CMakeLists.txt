@@ -44,7 +44,7 @@ if(POLICY CMP0148)
   cmake_policy(SET CMP0148 NEW)
 endif(POLICY CMP0148)
 if(POLICY CMP0153)
-  cmake_policy(SET CMP0153 OLD)
+  cmake_policy(SET CMP0153 NEW)
 endif(POLICY CMP0153)
 if(POLICY CMP0177)  # Added in CMake 3.31
   cmake_policy(SET CMP0177 NEW)
@@ -620,13 +620,11 @@ endif (UNIX AND NOT APPLE)
 
 # uninstall target
 # see https://gitlab.kitware.com/cmake/community/-/wikis/FAQ#can-i-do-make-uninstall-with-cmake
-if(NOT TARGET uninstall)
-  configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY)
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
 
-  add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake)
-endif()
+add_custom_target(wl_uninstall
+  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake)
 
