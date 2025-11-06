@@ -56,7 +56,7 @@ std::string get_output_directory() {
 #else
 	char path[MAX_PATH];
 #endif
-	auto pathlen = GetModuleFileName(NULL, path, MAX_PATH);
+	auto pathlen = GetModuleFileName(nullptr, path, MAX_PATH);
 	while (pathlen > 0 && path[pathlen] != '\\') {
 		--pathlen;
 	}
