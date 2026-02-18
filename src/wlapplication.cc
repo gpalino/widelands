@@ -989,6 +989,9 @@ void WLApplication::run() {
 		Widelands::Game game;
 		std::string title;
 		std::string message;
+		if (game_type_ == GameType::kReplay) {
+			throw wexception("test");
+		}
 		try {
 			bool start_replay = (game_type_ == GameType::kReplay);
 			if (use_last(filename_)) {

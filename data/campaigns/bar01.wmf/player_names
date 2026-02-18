@@ -5,6 +5,6 @@ packet_version="2"
 
 [player_1]
 name="Player 1"
-tribe="barbarians"
+tribe=
 ai=
 closeable="false"

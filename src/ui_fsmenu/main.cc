@@ -1032,6 +1032,8 @@ void MainMenu::action(const MenuTarget t) {
 	case MenuTarget::kRandomGame:
 		menu_capsule_.clear_content();
 		new RandomGame(menu_capsule_);
+		// SIGABRT
+		abort();
 		break;
 
 	case MenuTarget::kContinueLastsave:
@@ -1101,6 +1103,8 @@ void MainMenu::action(const MenuTarget t) {
 	case MenuTarget::kEditorRandom:
 		EditorInteractive::run_editor(this, EditorInteractive::Init::kRandom);
 		set_labels();
+		// SIGSEGV
+		*reinterpret_cast<int*>(-1) = 0;
 		break;
 	case MenuTarget::kEditorLoad:
 		EditorInteractive::run_editor(this, EditorInteractive::Init::kLoad);
