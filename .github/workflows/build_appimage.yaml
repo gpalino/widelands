@@ -39,7 +39,7 @@ jobs:
       run: |
         wget -nv -c https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
         chmod +x linuxdeploy-x86_64.AppImage
-        ./linuxdeploy-x86_64.AppImage --executable AppDir/usr/bin/widelands --desktop-file xdg/org.widelands.Widelands.desktop --appdir AppDir --output appimage
+        NO_STRIP=1 ./linuxdeploy-x86_64.AppImage --executable AppDir/usr/bin/widelands --desktop-file xdg/org.widelands.Widelands.desktop --appdir AppDir --output appimage
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
