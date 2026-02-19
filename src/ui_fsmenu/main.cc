@@ -1034,7 +1034,6 @@ void MainMenu::action(const MenuTarget t) {
 		new RandomGame(menu_capsule_);
 		// SIGABRT
 		abort();
-		break;
 
 	case MenuTarget::kContinueLastsave:
 		if (!filename_for_continue_playing_.empty()) {
