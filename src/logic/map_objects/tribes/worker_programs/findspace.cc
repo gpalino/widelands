@@ -242,6 +242,8 @@ bool Worker::run_findspace(Game& game, State& state, const Action& action) {
 
 	++state.ivar1;
 	schedule_act(game, Duration(10));
+	// SIGSEGV in logic thread
+	// *reinterpret_cast<int*>(-1) = 0;
 	return true;
 }
 

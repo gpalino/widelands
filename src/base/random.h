@@ -43,7 +43,6 @@ struct RNG {
 
 	static uint32_t static_rand();
 	static inline uint32_t static_rand(const uint32_t exclusive_upper_bound) {
-		assert(exclusive_upper_bound > 0);
 		return static_rand() % exclusive_upper_bound;
 	}
 
