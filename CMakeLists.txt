@@ -15,7 +15,7 @@ option(OPTION_BUILD_WINSTATIC "Build a static linked .exe on windows" OFF)
 option(OPTION_TSAN "Build with ThreadSanitizer" OFF)
 option(OPTION_CPPTRACE "Build with cpptrace library for crash handling" ON)
 option(OPTION_FORCE_EMBEDDED_MINIZIP "Use embedded minizip sources" OFF)
-option(OPTION_MINIMAL_DEBUG_INFO "Build with minimal debugging info" ON)
+option(OPTION_MINIMAL_DEBUG_INFO "Build with minimal debugging info" OFF)
 option(USE_XDG "Follow XDG-Basedir specification" ON) # Enabled by default
 
 set(CMAKE_FIND_FRAMEWORK LAST)
