@@ -42,6 +42,7 @@ namespace Widelands {
 
 static inline void delete_temp_file(const std::string& temp_file) {
 	try {
+		log_info("PG delete_temp_file %s", temp_file.c_str());
 		g_fs->fs_unlink(temp_file);
 	} catch (const std::exception& e) {
 		log_err("Unable to delete temporary file '%s': %s", temp_file.c_str(), e.what());
@@ -80,6 +81,7 @@ ReplayReader::ReplayReader(Game& game, const std::string& filename) : replaytime
 		const std::string temp_file =
 		   kTempFileDir + FileSystem::file_separator() + timestring() + kSavegameExtension;
 		{
+			log_info("PG ReplayReader::ReplayReader 1 %s", temp_file.c_str());
 			const uint32_t bytes = cmdlog_->unsigned_32();
 			std::unique_ptr<char[]> buffer(new char[bytes]);
 			cmdlog_->data_complete(buffer.get(), bytes);
@@ -87,6 +89,7 @@ ReplayReader::ReplayReader(Game& game, const std::string& filename) : replaytime
 			fw.data(buffer.get(), bytes);
 			fw.write(*g_fs, temp_file);
 		}
+		log_info("PG ReplayReader::ReplayReader 2 %s", temp_file.c_str());
 
 		game.enabled_addons().clear();
 		GameLoader gl(temp_file, game);
@@ -97,6 +100,7 @@ ReplayReader::ReplayReader(Game& game, const std::string& filename) : replaytime
 		gl.load_game();
 		game.postload_addons();
 
+		log_info("PG ReplayReader::ReplayReader V %s", temp_file.c_str());
 		delete_temp_file(temp_file);
 
 		game.rng().read_state(*cmdlog_);
@@ -197,6 +201,7 @@ ReplayWriter::ReplayWriter(Game& game, const std::string& filename)
 	const std::string temp_savegame =
 	   g_fs->create_unique_temp_file_path(kTempFileDir, kSavegameExtension);
 	std::string error;
+	log_info("PG ReplayWriter::ReplayWriter 1 %s", temp_savegame.c_str());
 	if (!save_handler.save_game(game_, temp_savegame, FileSystem::ZIP, &error)) {
 		throw wexception("Failed to save game for replay: %s", error.c_str());
 	}
@@ -215,6 +220,7 @@ ReplayWriter::ReplayWriter(Game& game, const std::string& filename)
 		cmdlog_->unsigned_32(bytes);
 		cmdlog_->data(fr.data(bytes), bytes);
 	}
+	log_info("PG ReplayWriter::ReplayWriter 2 %s", temp_savegame.c_str());
 
 	verb_log_info("Reloading the game from replay");
 	game.cleanup_for_load();
@@ -223,6 +229,7 @@ ReplayWriter::ReplayWriter(Game& game, const std::string& filename)
 		gl.load_game();
 	}
 	verb_log_info("Done reloading the game from replay");
+	log_info("PG ReplayWriter::ReplayWriter V %s", temp_savegame.c_str());
 	delete_temp_file(temp_savegame);
 
 	game.enqueue_command(new CmdReplaySyncWrite(game.get_gametime() + kReplaySyncInterval));
@@ -293,12 +300,15 @@ ReplayfileSavegameExtractor::ReplayfileSavegameExtractor(const std::string& game
 	fr.data_complete(buffer.get(), bytes);
 	FileWrite fw;
 	fw.data(buffer.get(), bytes);
+	log_info("PG ReplayfileSavegameExtractor::ReplayfileSavegameExtractor 1");
 	temp_file_ = g_fs->create_unique_temp_file_path(kTempFileDir, kSavegameExtension);
 	fw.write(*g_fs, temp_file_);
+	log_info("PG ReplayfileSavegameExtractor::ReplayfileSavegameExtractor 2 %s", temp_file_.c_str());
 }
 
 ReplayfileSavegameExtractor::~ReplayfileSavegameExtractor() {
 	if (!temp_file_.empty()) {
+		log_info("PG ReplayfileSavegameExtractor::~ReplayfileSavegameExtractor V %s", temp_file_.c_str());
 		delete_temp_file(temp_file_);
 	}
 }
