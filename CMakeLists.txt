@@ -175,9 +175,10 @@ if(OPTION_CPPTRACE)
     message(WARNING " Both ThreadSanitizer and cpptrace are handling crashes, consider turning off one of them."
                     " ThreadSanitizer may produce too many error messages inside the crash handler.")
   endif()
-  if(CMAKE_BUILD_TYPE STREQUAL "Release" AND WIN32)
+  if(CMAKE_BUILD_TYPE STREQUAL "Release" AND (WIN32 OR APPLE))
     # according to https://github.com/jeremy-rifkin/cpptrace/releases/tag/v0.8.0
-    # cpptrace can resolve symbols without debugging information for elf and mach-o binaries
+    # cpptrace can resolve symbols without debugging information for elf and mach-o binaries,
+    # but file names and line numbers need debug info (on macOS also a .dSYM bundle after stripping)
     message(WARNING "cpptrace needs debugging symbols to produce meaningful backtrace, consider RelWithDebInfo build type.")
   endif()
 endif()
