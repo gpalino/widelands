@@ -37,6 +37,7 @@
 #include <unistd.h>
 #endif
 
+#include "base/macros.h"
 #include "base/multithreading.h"
 #include "base/time_string.h"
 #include "build_info.h"
@@ -135,7 +136,10 @@ static void install_crash_handler(const int sig) {
 	signal(sig, segfault_handler);
 #else
 	struct sigaction action = {};
+	// glibc defines sa_handler as a macro that expands to an expression containing its own name
+	CLANG_DIAG_OFF("-Wdisabled-macro-expansion")
 	action.sa_handler = segfault_handler;
+	CLANG_DIAG_ON("-Wdisabled-macro-expansion")
 	sigemptyset(&action.sa_mask);
 	action.sa_flags = SA_RESETHAND | SA_NODEFER;
 	sigaction(sig, &action, nullptr);
