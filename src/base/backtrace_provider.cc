@@ -45,6 +45,10 @@ std::string BacktraceProvider::crash_dir = "./widelands_crash_report_";
 // Execinfo implementation taken from https://stackoverflow.com/a/77336
 // Cpptrace implementation described in https://github.com/jeremy-rifkin/cpptrace
 static void segfault_handler(const int sig) {
+#ifdef _WIN32
+	// Windows has no SA_RESETHAND, restore default handling manually
+	signal(sig, SIG_DFL);
+#endif
 	const std::string signal_description = BacktraceProvider::get_signal_description(sig);
 
 	std::cout << std::endl
@@ -115,12 +119,26 @@ static void segfault_handler(const int sig) {
 
 	::exit(sig);
 }
+
+// Install the crash handler as one-shot handler: a crash inside the handler itself
+// must not re-enter it (endless recursion or deadlock).
+static void install_crash_handler(const int sig) {
+#ifdef _WIN32
+	signal(sig, segfault_handler);
+#else
+	struct sigaction action = {};
+	action.sa_handler = segfault_handler;
+	sigemptyset(&action.sa_mask);
+	action.sa_flags = SA_RESETHAND | SA_NODEFER;
+	sigaction(sig, &action, nullptr);
+#endif
+}
 #endif  // PRINT_BACKTRACE_CPPTRACE || PRINT_BACKTRACE_EXECINFO
 
 BacktraceProvider::DefaultAbortGuard::~DefaultAbortGuard() {
 #if defined(PRINT_BACKTRACE_CPPTRACE) || defined(PRINT_BACKTRACE_EXECINFO)
 	if (error_handling) {
-		signal(SIGABRT, segfault_handler);
+		install_crash_handler(SIGABRT);
 	} else {
 		signal(SIGABRT, SIG_DFL);
 	}
@@ -151,8 +169,8 @@ void BacktraceProvider::register_signal_handler() {
 #ifdef SIGBUS
 	        SIGBUS,  // Not available on all systems
 #endif
-	        SIGABRT, SIGFPE, SIGILL, SIGSEGV}) {
-		signal(s, segfault_handler);
+			  SIGABRT, SIGFPE, SIGILL, SIGSEGV}) {
+		install_crash_handler(s);
 	}
 #endif  // PRINT_BACKTRACE_CPPTRACE || PRINT_BACKTRACE_EXECINFO
 }
