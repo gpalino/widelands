@@ -38,6 +38,11 @@ wl_library(base
     notifications
 )
 
+if (EXECINFO_LIBRARY)
+  # Needed by backtrace_provider.cc on BSD systems
+  target_link_libraries(base ${EXECINFO_LIBRARY})
+endif()
+
 wl_library(base_macros
   SRCS
     macros.h
