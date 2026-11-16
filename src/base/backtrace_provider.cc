@@ -139,7 +139,11 @@ static void install_crash_handler(const int sig) {
 }
 #endif  // PRINT_BACKTRACE_CPPTRACE || PRINT_BACKTRACE_EXECINFO
 
-BacktraceProvider::DefaultAbortGuard::~DefaultAbortGuard() {
+BacktraceProvider::AbortHandlerGuard::AbortHandlerGuard(void (*handler)(int)) {
+	signal(SIGABRT, handler);
+}
+
+BacktraceProvider::AbortHandlerGuard::~AbortHandlerGuard() {
 #if defined(PRINT_BACKTRACE_CPPTRACE) || defined(PRINT_BACKTRACE_EXECINFO)
 	if (error_handling) {
 		install_crash_handler(SIGABRT);
