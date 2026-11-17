@@ -152,13 +152,6 @@ EOF
    echo "Re-sign libraries with 'ad-hoc signing' see man codesign"
    codesign --sign - --force $DESTINATION/Widelands.app/Contents/libs/*
 
-   echo "Extracting debug symbols ..."
-   # cpptrace needs DWARF info to resolve file names and line numbers in crash reports.
-   # The .dSYM bundle next to the binary is found automatically.
-   dsymutil $DESTINATION/Widelands.app/Contents/MacOS/widelands \
-      -o $DESTINATION/Widelands.app/Contents/MacOS/widelands.dSYM || \
-      echo "Warning: dsymutil failed, crash reports will lack line numbers."
-
    echo "Stripping binary ..."
    strip -u -r $DESTINATION/Widelands.app/Contents/MacOS/widelands
 }
